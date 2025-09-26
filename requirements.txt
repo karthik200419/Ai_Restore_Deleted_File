@@ -1,0 +1,7 @@
+pytsk3
+torch
+diffusers
+transformers
+opencv-python
+Pillow
+PyQt5
