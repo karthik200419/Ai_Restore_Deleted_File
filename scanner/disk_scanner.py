@@ -4,10 +4,16 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
+
 class DiskScanner:
     def __init__(self, image_path):
+        """
+        image_path: raw device path (e.g., \\.\C:)
+        """
         self.image_path = image_path
+
         try:
+            # Open the disk in read-only mode
             self.img = pytsk3.Img_Info(self.image_path)
             self.fs = pytsk3.FS_Info(self.img)
             logging.info(f"Opened disk image: {image_path}")
@@ -16,6 +22,10 @@ class DiskScanner:
             raise
 
     def scan_deleted_files(self, directory="/"):
+        """
+        Scan a directory for deleted files.
+        Returns a list of deleted file metadata.
+        """
         try:
             dir_obj = self.fs.open_dir(path=directory)
             deleted_files = []
@@ -39,6 +49,9 @@ class DiskScanner:
             return []
 
     def recover_file(self, inode, output_dir="recovered_files"):
+        """
+        Recover a file by inode number and save it to output_dir.
+        """
         try:
             file_obj = self.fs.open_meta(inode=inode)
             file_data = file_obj.read_random(0, file_obj.info.meta.size)
